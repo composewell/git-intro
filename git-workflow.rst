@@ -230,3 +230,4 @@ References
 * https://git-scm.com/docs/gitworkflows
 * https://git-scm.com/docs reference
 * https://git-scm.com/doc all docs
+* https://ohshitgit.com/ Some common problems and solutions
