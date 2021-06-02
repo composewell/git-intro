@@ -222,6 +222,12 @@ Others
 
 git rm/mv/reset/show/cherry-pick
 
+Frequently Asked Questions
+--------------------------
+
+Q. How to find when a particular line in the code was introduced?
+A. https://stackoverflow.com/questions/5816134/how-to-find-the-git-commit-that-introduced-a-string-in-any-branch/5816177#5816177
+
 References
 ----------
 
