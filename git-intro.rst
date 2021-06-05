@@ -231,6 +231,7 @@ A. https://stackoverflow.com/questions/5816134/how-to-find-the-git-commit-that-i
 References
 ----------
 
+* https://education.github.com/git-cheat-sheet-education.pdf
 * https://git-scm.com/docs/gittutorial
 * https://git-scm.com/docs/giteveryday
 * https://git-scm.com/docs/gitworkflows
