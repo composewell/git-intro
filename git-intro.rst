@@ -214,13 +214,112 @@ Rebasing
 rebasing on top of new changes to master/some other branch.
 rebasing to squash/drop/reorder commits.
 
+* git rebase -i
+
 Stashing
 --------
 
-Others
-------
+* git stash
 
-git rm/mv/reset/show/cherry-pick
+Submodules
+----------
+
+A submodule is a reference to a specific commit in a foreign repository.
+The foreign repository is attached to a specified folder path in the
+super repository.
+
+`.gitmodules` file at the super repo root contains the list of
+submodules in recorded in the repo.
+
+When you clone a repo its submodules are not fetched, it only contains
+the information to fetch them. To fetch the foreign repos you need to
+initialize and update the submodules.  To initialize and/or update all
+the submodules and submodules inside them::
+
+  $ git submodule update --init --recursive
+
+Alternatively you could clone with ``--recursive`` option to update the
+modules at the time of cloning itself.
+
+The submodule folder will now contain a checkout of the foreign repo
+at the commit recorded in the super repo. The submodule folder is an
+independent git repo in itself. You can run usual git commands in this
+repo.
+
+To see the status of all submodules in the super repo::
+
+  $ git submodule status --recursive
+
+If you create new commits or change the head commit inside the submodule
+folder, ``git status`` in the super repo will show the submodule folder
+as modified::
+
+        modified:   streamly (new commits)
+
+``git diff`` will show the commit change to be recorded for the
+submodule folder::
+
+  Subproject commit 04e3781d5d3d8f9ae2a8fedc90ea62c31a8a5100
+
+You can commit this change to record the new commit for the submodule.
+To discard the changes and reset the submodule to the commit recorded in
+the super repo::
+
+  $ git submodule update --checkout
+
+To add ``streamly`` as a submodule in your project at the path
+``./streamly`` ::
+
+  $ git submodule add git@github.com:composewell/streamly.git streamly
+
+It will make the changes in the super repo for adding the submodule and
+clone the streamly repo in ``./streamly`` folder and stage the changes
+for commit. You can then commit it::
+
+  $ git status
+  Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   .gitmodules
+        new file:   streamly
+  $ git commit
+
+The commit freezes the submodule at the commit which is checked out in the
+submodule repo.
+
+For more details try ``git submodule --help``.
+
+Advanced
+~~~~~~~~
+
+When you add the submodule an entry is added to ``.gitmodules`` and the
+folder path in which the submodule is to be checked out is committed to the
+repo. This information is global to the git repo and is pushed to remotes on a
+push.
+
+``git submodule init``, adds an entry in ``.git/config``. ``git
+submodule update`` fetches the remote repo in ``.git/modules`` and
+checks it out in the submodule folder. All this information is local to
+the current repo and is not pushed to remotes when the current repo is
+pushed.
+
+``git submodule add`` does all of the above. In a cloned repo the first
+part is present in the repo being cloned, and you need to do ``git
+submodule init`` and ``git submodule update`` to make the local repo
+changes.
+
+When you ``deinit`` the submodule git removes the entry from ``.gitmodules``
+and removes the folder as well but the metadata in ``.git/config`` and
+in ``.git/modules`` may remain. If you want to cleanup everything you
+can remove those manually.
+
+Other Commands
+--------------
+
+* git rm
+* git mv
+* gti reset
+* git show
+* git cherry-pick
 
 Frequently Asked Questions
 --------------------------
