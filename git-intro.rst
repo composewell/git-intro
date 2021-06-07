@@ -122,6 +122,11 @@ Read these:
 * https://commit.style/
 * https://chris.beams.io/posts/git-commit/#seven-rules .
 
+If you want to add co-authors to a commit you can add one or more lines
+to the commit message in this format (recognized by github and gitlab)::
+
+  Co-authored-by: Author Name <author@example.com>
+
 Creating branches
 -----------------
 
