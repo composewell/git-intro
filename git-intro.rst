@@ -26,7 +26,7 @@ Creating a new repository
 
 The directory ``repo`` is also called a workspace. ``git`` stores all
 its data in the `.git` directory at the root of the workspace. If you
-remove the `.git` directory the workspace just becomes a plain regulary
+remove the `.git` directory, the workspace just becomes a plain regular
 directory tree with no git awareness.
 
 Cloning an existing repository
@@ -115,12 +115,17 @@ To check the diff between two commits::
 
     $ git commit-id1 commit-id2
 
+Diff of the staged changes::
+
+  $ git difftool --staged
+
 Commit Messages
 ---------------
 
 Read these:
+
 * https://commit.style/
-* https://chris.beams.io/posts/git-commit/#seven-rules .
+* https://chris.beams.io/posts/git-commit/#seven-rules
 
 If you want to add co-authors to a commit you can add one or more lines
 to the commit message in this format (recognized by github and gitlab)::
@@ -130,13 +135,14 @@ to the commit message in this format (recognized by github and gitlab)::
 Creating branches
 -----------------
 
-By default there is only one branch in the repository called "master". By
-default you are working on the master branch. To see which branch you are on::
+By default there is only one branch in the repository called "master"
+or "main" in newer versions of git. By default you are working on the
+master branch. To see which branch you are on::
 
     $ git status
 
 When new changes are made to files in the repository they are recorded
-as changes on the master branch. The master branch moves forward as new
+as changes on the current branch. The current branch moves forward as new
 changes are committed. The latest commit on the branch is called the HEAD
 commit.
 
@@ -148,13 +154,14 @@ All the commits to a specific file using::
 
     $ git log file
 
-You can create a new branch off some commit on the master branch. This means
-all the files/commits up to that point will also be available on the new
-branch. When we make any changes to the files on a branch no other branches are
-affected, those changes are visible only on that branch. In other words we have
-cloned a branch from the beginning to the given point including all the commit
-history of that branch and now we can make changes to it independently. To
-create a branch::
+You can create a new branch off some commit on the current branch (or
+any branch). This means all the files/commits up to that point will also
+be available on the new branch. When we make any changes to the files
+on a branch no other branches are affected, those changes are visible
+only on that branch. In other words, we have cloned a branch from the
+beginning to the given point including all the commit history of that
+branch and now we can make changes to it independently. To create a
+branch::
 
     $ git branch test  # creates a branch from the current branch HEAD commit
 
@@ -193,38 +200,93 @@ repository set as a remote named `upstream`. When you clone your fork
 then you have two remotes in the cloned repo, the original repository is
 named `upstream` and your forked repository is named `origin`.
 
-Making new changes
-------------------
+Collaborating
+-------------
 
-After forking/cloning a repo you need to make changes to the repo,
-then push your changes to your fork and create a pull request or merge
-request to the original repository.
+Working on the fork of a repo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Using the fork model, original repo branch model.
+After forking/cloning a repo you would want to make changes to it. Clone the
+forked repository to your local machine. Identify the branch on which you want
+to make changes, make the changes and push the changes to your fork. Then go to
+the fork or the parent repository and create a pull request from your changes.
 
-Do not work on the master branch.
-create a new branch usually from master.
+Working on the original repo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-refreshing your local repo with changes on upstream repo.
-rebasing your changes on top of newly pulled changes.
+If you have access to the original repository you can work directly on the
+original repo instead of working on a fork. Clone the original repository (or
+add it as a remote in your existing local clone), then identify the branch you
+want to base your changes on, create a new branch from the tip of that branch,
+make your changes and push the new branch to the remote repository. After
+pushing the branch create a pull request or merge request asking to merge your
+changes to the base branch. Add appropriate reviewers to the PR.
+
+Rebasing your branch
+~~~~~~~~~~~~~~~~~~~~
+
+The base branch from which you created your branch may move forward when
+others add more commits to it. When you pull the base branch from the
+remote repo you may find that your branch is forked off a previous point
+from the base branch.  In that case you should rebase your branch on top
+of the latest base branch before sending it for review or before the
+merge::
+
+  $ git rebase -i <base branch>
+
+You may have to resolve any conflicts during the rebase.  You can also
+choose to squash, drop, reorder commits during the rebase.
+
+A common mistake by beginners is to merge the base branch in your branch
+instead of rebasing it. That is not recommended, rebase is the preferred
+method.
+
+After the rebase you need to force push your branch to the remote because your
+branch has now diverged from the branch on remote.
+
+Force pushing a branch
+~~~~~~~~~~~~~~~~~~~~~~
+
+After you have created the pull request reviewers are looking at your
+changes, they may clone your branch or may even push some fixes to your
+branch. In general, you should not force push on this branch if others
+may have cloned it or may be working on it.
+
+The best practice is to always push only new commits to the branch and
+never rebase or force push until the reviewers are done or unless there
+is an agreement between the author and reviewers. Though, there is no
+hard and fast rule, you can use your judgement whether to force push or
+not based on the current context.  You can force push on a draft PR or
+if you know reviewers have not yet started looking at it.
+
+Once the review is done you can rebase/squash your changes and force
+push.
+
+Engagement rules
+~~~~~~~~~~~~~~~~
+
+* Do not directly push changes to the master branch or for that matter
+  to any collaboration branch. Collaboration branches should be pushed
+  only when merging.
+* Never force push on collaboration branches. They always go in the
+  forward direction, they are never rebased or reset to previous points
+  except in very unusual cases.  If something has to be reverted on these
+  branches it has to be committed as another forward commit. A forced change on
+  collaboration branches can create havoc as everyone working on the branch
+  will be surprised and will have to rework their changes.
 
 Merging
--------
+~~~~~~~
 
 The most common case of non-maintainer merge is during rebase.
-
-Rebasing
---------
-
-rebasing on top of new changes to master/some other branch.
-rebasing to squash/drop/reorder commits.
-
-* git rebase -i
 
 Stashing
 --------
 
 * git stash
+* git stash list
+* git stash pop
+* git stash apply
 
 Submodules
 ----------
@@ -316,6 +378,27 @@ When you ``deinit`` the submodule git removes the entry from ``.gitmodules``
 and removes the folder as well but the metadata in ``.git/config`` and
 in ``.git/modules`` may remain. If you want to cleanup everything you
 can remove those manually.
+
+Who changed a line and why?
+---------------------------
+
+Find out the commit in which the line was last changed::
+
+  $ git blame <file>
+
+Show that commit::
+
+  $ git show <commit>
+
+Note the text in the line you are chasing, then find all commits that
+include the text::
+
+  $ git log --source --all -S <string>
+  $ git log --source --all -G <pattern>
+
+Select the commit you are interested in and then find the older text from the
+diff of that commit and then you can chase in the same way who introduced that
+and so on.
 
 Other Commands
 --------------
