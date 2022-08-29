@@ -291,17 +291,20 @@ Stashing
 Submodules
 ----------
 
-A submodule is a reference to a specific commit in a foreign repository.
-The foreign repository is attached to a specified folder path in the
+A submodule is a reference to a specific commit in another repository.
+The external repository is attached to a specified folder path in the
 super repository.
 
-`.gitmodules` file at the super repo root contains the list of
-submodules in recorded in the repo.
+``.gitmodules`` file at the super repo root contains the list of
+submodules recorded in the repo. This file is automatically managed by
+the ``git submodule`` command.
 
-When you clone a repo its submodules are not fetched, it only contains
-the information to fetch them. To fetch the foreign repos you need to
-initialize and update the submodules.  To initialize and/or update all
-the submodules and submodules inside them::
+Using repos with submodules
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When you clone a repo its submodules are not fetched automatically, it
+only contains the information to fetch them. To fetch the foreign repos
+you need to initialize and update the submodules::
 
   $ git submodule update --init --recursive
 
@@ -309,9 +312,14 @@ Alternatively you could clone with ``--recursive`` option to update the
 modules at the time of cloning itself.
 
 The submodule folder will now contain a checkout of the foreign repo
-at the commit recorded in the super repo. The submodule folder is an
+at the commit tag recorded in the super repo. The submodule folder is an
 independent git repo in itself. You can run usual git commands in this
-repo.
+repo. However, it is not exactly the same as a regular repo, especially
+note that ``.git`` in this repo is a text file with its contents
+pointing to a ``.git`` directory of the super repo, it contains
+something like this::
+
+  gitdir: ../.git/modules/nix-bundle-init
 
 To see the status of all submodules in the super repo::
 
@@ -333,6 +341,9 @@ To discard the changes and reset the submodule to the commit recorded in
 the super repo::
 
   $ git submodule update --checkout
+
+Adding Submodules to a repo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To add ``streamly`` as a submodule in your project at the path
 ``./streamly`` ::
@@ -405,7 +416,7 @@ Other Commands
 
 * git rm
 * git mv
-* gti reset
+* git reset
 * git show
 * git cherry-pick
 
