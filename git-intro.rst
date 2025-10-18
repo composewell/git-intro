@@ -336,7 +336,12 @@ submodule folder::
 
   Subproject commit 04e3781d5d3d8f9ae2a8fedc90ea62c31a8a5100
 
-You can commit this change to record the new commit for the submodule.
+You can commit this change to record the new commit for the submodule.::
+
+  git add <path/to/submodule>
+
+``git commit -a`` will commit all the pending submodules.
+
 To discard the changes and reset the submodule to the commit recorded in
 the super repo::
 
